@@ -1,0 +1,32 @@
+desribe('图书管理视图',()=>{
+    it('应该筛选与搜索框输入匹配的图书数据',(client)=>{
+        const tems='大数据'
+        client.url(client.launchUrl)
+        .waitForElementVisible('body',30000)
+        .setValue('input[type="search"]',[temrs,client.Keys.ENTER])
+        .assert.containsText('.book-name',terms)
+        .setValue('input[type="search"]',['不存在的数据',client.Keys.ENTER])
+        .assert.elementPresent('.empty-holder')
+        .end()
+    })
+    it('多行数据选定时应该显示删除按钮，显示选中的数量以及选中的样式',client=>{
+        const isbns=['978-7-121-28410-6','978-7-121-28817-3','978-7-121-28413-7']
+        //对Element的定位很重要，这里只能是个体
+        client.url(client.launchUrl)
+        .waitForElementVisible('body',30000)
+        .assert.elementNotPresent('.selection')
+        .assert.elementNotPresent('#btn-delete')
+        .assert.cssClassNotPresent('tr[data-isbn="${isbns[0]}"','book-selected')
+        .assert.cssClassNotPresent('tr[data-isbn="${isbns[1]}"','book-selected')
+        .assert.cssClassNotPresent('tr[data-isbn="${isbns[2]}"','book-selected')
+        .click('input[type="checkbox"][data-isbn="${isbns[0]}"]')
+        .click('input[type="checkbox"][data-isbn="${isbns[1]}"]')
+        .click('input[type="checkbox"][data-isbn="${isbns[2]}"]')
+        .assert.containsText('.selection','3')
+        .assert.elementPresent('#btn-delete')
+        .assert.cssClassPresent('tr[data-isbn]="$[isbns[0]}"','book-selected')
+        .assert.cssClassPresent('tr[data-isbn]="$[isbns[1]}"','book-selected')
+        .assert.cssClassPresent('tr[data-isbn]="$[isbns[2]}"','book-selected')
+        .end()
+    })
+})
